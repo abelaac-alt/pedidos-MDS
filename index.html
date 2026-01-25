@@ -255,13 +255,35 @@
             border-radius: 4px;
         }
 
-        /* --- FOOTER ISO CERTIFICADOS (REDUCIDOS Y A COLOR) --- */
+        /* --- FOOTER SECCIÓN WEB Y CERTIFICADOS --- */
         footer {
             background-color: var(--white);
-            padding: 25px 20px;
+            padding: 40px 20px;
             text-align: center;
             border-top: 1px solid var(--border);
             margin-top: 20px;
+        }
+
+        .web-button {
+            display: inline-block;
+            background: var(--blue-dark);
+            color: var(--white);
+            text-decoration: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1rem;
+            margin-bottom: 35px;
+            box-shadow: 0 4px 15px rgba(0, 51, 102, 0.2);
+            transition: all 0.3s ease;
+            border: 2px solid var(--blue-dark);
+        }
+
+        .web-button:hover {
+            background: var(--white);
+            color: var(--blue-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 51, 102, 0.3);
         }
 
         .iso-container {
@@ -285,13 +307,12 @@
             height: auto;
             display: block;
             margin: 0 auto;
-            opacity: 0.95; /* Color casi total */
+            opacity: 0.95;
             transition: transform 0.3s ease;
         }
         
-        .iso-img:hover {
-            transform: scale(1.05);
-        }
+        .iso-img:hover { transform: scale(1.05); }
+
     </style>
 </head>
 <body>
@@ -366,6 +387,10 @@
 
 <footer>
     <div class="iso-container">
+        <a href="https://www.matriculadosdelsur.com" target="_blank" class="web-button">
+            🌐 VISITAR MATRICULADOSDELSUR.COM
+        </a>
+        
         <p class="iso-title">Calidad Certificada</p>
         <img src="https://www.matriculadosdelsur.com/wp-content/uploads/2025/10/ISO-MDS-1.webp" alt="Certificaciones ISO Grupo MDS" class="iso-img">
     </div>
