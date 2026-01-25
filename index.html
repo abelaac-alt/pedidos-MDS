@@ -27,13 +27,14 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Arial, sans-serif;
             background-color: var(--bg-page);
             color: var(--text-dark);
             line-height: 1.6;
             -webkit-tap-highlight-color: transparent;
         }
 
+        /* --- HEADER --- */
         header {
             background-color: var(--white);
             padding: 25px 0;
@@ -45,7 +46,7 @@
 
         header h1 {
             color: var(--blue-dark);
-            font-size: 2rem;
+            font-size: 1.8rem;
             text-transform: uppercase;
             letter-spacing: 2px;
             font-weight: 800;
@@ -56,88 +57,87 @@
             right: 20px;
             top: 50%;
             transform: translateY(-50%);
-            width: 30px;
-            height: 30px;
-            border: 2px solid var(--blue-dark);
+            width: 32px;
+            height: 32px;
+            border: 2px solid var(--blue-corp);
             border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
-            color: var(--blue-dark);
+            color: var(--blue-corp);
             font-weight: bold;
             cursor: pointer;
-            opacity: 0.6;
+            transition: 0.3s;
         }
+        .help-trigger:hover { background: var(--blue-corp); color: white; }
 
-        /* --- MODALES (AYUDA Y CONFIRMACIÓN) --- */
+        /* --- MODALES --- */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 51, 102, 0.85);
+            background: rgba(0, 30, 60, 0.9);
             display: none;
             justify-content: center;
             align-items: center;
             z-index: 2000;
             padding: 20px;
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(8px);
         }
         .modal-content {
             background: white;
-            padding: 30px;
-            border-radius: 12px;
-            max-width: 500px;
+            padding: 40px;
+            border-radius: 15px;
+            max-width: 650px;
             width: 100%;
-            max-height: 90vh;
+            max-height: 85vh;
             overflow-y: auto;
             position: relative;
-            border-top: 8px solid var(--orange-corp);
-            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
         }
-        .modal-close { position: absolute; top: 15px; right: 15px; font-size: 1.5rem; cursor: pointer; color: #94a3b8; }
-        
-        .success-icon { font-size: 4rem; color: var(--success); margin-bottom: 15px; }
-        .order-id-badge { background: #f1f5f9; padding: 10px 20px; border-radius: 50px; font-weight: bold; color: var(--blue-dark); display: inline-block; margin: 10px 0; border: 1px dashed var(--blue-corp); }
-        
-        .confirm-summary { text-align: left; background: #fafafa; padding: 15px; border-radius: 8px; margin: 20px 0; font-size: 0.85rem; border: 1px solid #eee; }
-        .confirm-summary ul { list-style: none; padding: 0; }
-        .confirm-summary li { padding: 5px 0; border-bottom: 1px solid #f0f0f0; }
+        .modal-close { position: absolute; top: 20px; right: 20px; font-size: 1.5rem; cursor: pointer; color: #cbd5e1; }
 
-        /* --- BOTONES MODAL --- */
-        .btn-modal-wa { background: #25D366; color: white; padding: 15px; border-radius: 8px; text-decoration: none; display: flex; justify-content: center; align-items: center; font-weight: bold; margin-top: 10px; gap: 10px; }
-        .btn-modal-close { background: #f1f5f9; color: var(--text-dark); padding: 12px; border-radius: 8px; border: none; width: 100%; margin-top: 10px; cursor: pointer; font-weight: bold; }
+        /* --- ESTILO AYUDA ELEGANTE --- */
+        .help-header { text-align: center; margin-bottom: 30px; }
+        .help-header h2 { color: var(--blue-dark); text-transform: uppercase; font-size: 1.4rem; margin-bottom: 10px; }
+        .help-header p { color: #64748b; font-size: 0.95rem; }
 
-        /* --- ESTRUCTURA --- */
+        .step-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px; }
+        .step-item { background: #f8fafc; padding: 15px; border-radius: 10px; border: 1px solid #e2e8f0; }
+        .step-num { color: var(--orange-corp); font-weight: 900; font-size: 1.2rem; margin-bottom: 5px; display: block; }
+        .step-item h4 { color: var(--blue-dark); font-size: 0.85rem; text-transform: uppercase; margin-bottom: 5px; }
+        .step-item p { font-size: 0.8rem; color: #475569; line-height: 1.4; }
+
+        .faq-box { border-top: 1px solid #e2e8f0; pt: 25px; }
+        .faq-card { margin-bottom: 20px; }
+        .faq-card h4 { color: var(--blue-corp); font-size: 0.95rem; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
+        .faq-card h4::before { content: '●'; color: var(--orange-corp); font-size: 0.8rem; }
+        .faq-card p { font-size: 0.9rem; color: #334155; text-align: justify; background: #fffcf5; padding: 15px; border-radius: 8px; border-left: 4px solid var(--orange-corp); }
+
+        /* --- BOTONES CONFIRMACIÓN --- */
+        .btn-modal-wa { background: #25D366; color: white; padding: 16px; border-radius: 50px; text-decoration: none; display: flex; justify-content: center; align-items: center; font-weight: bold; margin-top: 15px; gap: 10px; box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3); }
+        .order-id-badge { background: #f1f5f9; padding: 10px 25px; border-radius: 50px; font-weight: 800; color: var(--blue-dark); display: inline-block; margin: 15px 0; border: 1px solid var(--blue-corp); letter-spacing: 1px; }
+
+        /* --- RESTO DE ESTILOS MANTENIDOS --- */
         .container { max-width: 1200px; margin: 30px auto; display: grid; grid-template-columns: 1fr; gap: 30px; padding: 0 20px 40px; }
         @media (min-width: 992px) { .container { grid-template-columns: 1.8fr 1.2fr; } }
-
-        .category-card { background: var(--white); border: 1px solid var(--border); border-radius: 4px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-        .category-header { background-color: var(--orange-corp); color: var(--blue-dark); padding: 18px 25px; font-weight: 800; font-size: 1.2rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; text-transform: uppercase; }
-        .category-content.collapsed { grid-template-rows: 0fr; }
+        .category-card { background: var(--white); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 20px; overflow: hidden; }
+        .category-header { background-color: var(--orange-corp); color: var(--blue-dark); padding: 18px 25px; font-weight: 800; cursor: pointer; display: flex; justify-content: space-between; text-transform: uppercase; }
         .category-content { display: grid; grid-template-rows: 1fr; transition: grid-template-rows 0.3s ease; }
+        .category-content.collapsed { grid-template-rows: 0fr; }
         .category-inner { overflow: hidden; padding: 0 20px; }
-
-        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; padding: 20px 0 25px 0; }
-        .item-card { background: #fff; border: 1px solid var(--border); padding: 20px; border-radius: 4px; display: flex; flex-direction: column; justify-content: space-between; }
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; padding: 20px 0; }
+        .item-card { background: #fff; border: 1px solid var(--border); padding: 20px; border-radius: 8px; display: flex; flex-direction: column; justify-content: space-between; }
         .item-img { width: 100%; height: 160px; object-fit: contain; margin-bottom: 15px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
-        .item-card h3 { font-size: 0.95rem; color: var(--blue-dark); margin-bottom: 8px; }
-        .item-pack { font-size: 0.8rem; font-weight: bold; color: #64748b; margin-bottom: 15px; }
-
-        .qty-box { display: flex; align-items: center; border: 1px solid var(--blue-corp); border-radius: 3px; overflow: hidden; margin-bottom: 10px; }
-        .qty-btn { background: #f8fafc; border: none; width: 40px; height: 38px; cursor: pointer; font-weight: bold; color: var(--blue-dark); }
+        .qty-box { display: flex; align-items: center; border: 1px solid var(--blue-corp); border-radius: 5px; margin-bottom: 10px; }
+        .qty-btn { background: #f8fafc; border: none; width: 40px; height: 38px; cursor: pointer; font-weight: bold; }
         .qty-val { flex-grow: 1; text-align: center; font-weight: bold; }
-        .btn-add { background: var(--blue-dark); color: white; border: none; padding: 10px; width: 100%; border-radius: 3px; cursor: pointer; font-weight: bold; text-transform: uppercase; font-size: 0.8rem; }
-
-        /* --- SIDEBAR --- */
-        .sidebar { background: var(--white); border: 1px solid var(--border); border-top: 5px solid var(--orange-corp); padding: 25px; border-radius: 4px; height: fit-content; position: sticky; top: 20px; }
-        .cart-items-wrapper { max-height: 300px; overflow-y: auto; margin-bottom: 20px; }
-        .cart-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f1f5f9; font-size: 0.85rem; }
-        .input-form { width: 100%; padding: 10px; margin-top: 10px; border: 1px solid var(--border); border-radius: 4px; }
-        .btn-submit { width: 100%; background: var(--orange-corp); color: var(--blue-dark); border: none; padding: 15px; margin-top: 20px; font-weight: 800; text-transform: uppercase; border-radius: 4px; cursor: pointer; }
-
+        .btn-add { background: var(--blue-dark); color: white; border: none; padding: 12px; width: 100%; border-radius: 5px; cursor: pointer; font-weight: bold; text-transform: uppercase; font-size: 0.8rem; }
+        .sidebar { background: var(--white); border: 1px solid var(--border); border-top: 5px solid var(--orange-corp); padding: 25px; border-radius: 8px; position: sticky; top: 20px; }
+        .input-form { width: 100%; padding: 12px; margin-top: 10px; border: 1px solid var(--border); border-radius: 5px; }
+        .btn-submit { width: 100%; background: var(--orange-corp); color: var(--blue-dark); border: none; padding: 16px; margin-top: 20px; font-weight: 800; text-transform: uppercase; border-radius: 5px; cursor: pointer; }
         footer { background-color: var(--white); padding: 40px 20px; text-align: center; border-top: 1px solid var(--border); margin-top: 20px; }
-        .web-button { display: inline-block; background: var(--blue-dark); color: var(--white); text-decoration: none; padding: 15px 30px; border-radius: 50px; font-weight: bold; margin-bottom: 30px; transition: 0.3s; }
-        .iso-img { max-width: 180px; width: 100%; opacity: 0.95; margin: 0 auto; display: block; }
-
+        .web-button { display: inline-block; background: var(--blue-dark); color: var(--white); text-decoration: none; padding: 15px 30px; border-radius: 50px; font-weight: bold; margin-bottom: 30px; }
+        .iso-img { max-width: 180px; width: 100%; margin: 0 auto; display: block; }
         .wa-float { position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; z-index: 1000; background-color: #25D366; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
     </style>
 </head>
@@ -149,35 +149,67 @@
 </header>
 
 <div class="modal-overlay" id="helpModal" onclick="toggleModal('helpModal')">
-    <div class="modal-content" onclick="event.stopPropagation()" style="text-align: left;">
+    <div class="modal-content" onclick="event.stopPropagation()">
         <span class="modal-close" onclick="toggleModal('helpModal')">✕</span>
-        <h2 style="text-align: center;">Ayuda y FAQ</h2>
-        <p style="font-size: 0.9rem; margin-bottom: 20px;"><strong>Cómo pedir:</strong> Seleccione productos, añada al carrito, rellene sus datos y pulse confirmar para abrir su gestor de correo.</p>
-        <div style="background: #f8fafc; padding: 15px; border-radius: 8px; font-size: 0.85rem;">
-            <p><strong>¿Plazos de entrega?</strong><br>1-3 días (GLS/REDUR). Placas con publicidad: 10 días aprox.</p><br>
-            <p><strong>¿Dudas comerciales?</strong><br>Use el botón de WhatsApp para contactar con nosotros.</p>
+        
+        <div class="help-header">
+            <h2>Centro de Asistencia B2B</h2>
+            <p>Estamos a su disposición para facilitar su gestión de suministros.</p>
+        </div>
+        
+        <div class="step-grid">
+            <div class="step-item">
+                <span class="step-num">01</span>
+                <h4>Configuración</h4>
+                <p>Navegue por las categorías y ajuste las cantidades según sus necesidades.</p>
+            </div>
+            <div class="step-item">
+                <span class="step-num">02</span>
+                <h4>Validación</h4>
+                <p>Revise su selección en el panel derecho y aporte sus datos de contacto.</p>
+            </div>
+            <div class="step-item">
+                <span class="step-num">03</span>
+                <h4>Tramitación</h4>
+                <p>Al confirmar, se generará una orden formal lista para ser enviada por email.</p>
+            </div>
+            <div class="step-item">
+                <span class="step-num">04</span>
+                <h4>Seguimiento</h4>
+                <p>Utilice el código de pedido para cualquier consulta rápida vía WhatsApp.</p>
+            </div>
+        </div>
+
+        <div class="faq-box">
+            <div class="faq-card">
+                <h4>¿Cuál es el tiempo estimado de entrega?</h4>
+                <p>En <strong>Grupo MDS</strong> priorizamos su urgencia. Los envíos nacionales mediante GLS o REDUR se entregan habitualmente en un margen de <strong>24 a 72 horas laborables</strong>. Si su pedido incluye personalización (tira publicitaria), el proceso artesanal requiere aproximadamente 10 días para garantizar la máxima calidad.</p>
+            </div>
+            <div class="faq-card">
+                <h4>¿Precisa atención personalizada?</h4>
+                <p>Su satisfacción es nuestra prioridad. Si tiene dudas técnicas o comerciales antes de finalizar su pedido, dispone de un canal de comunicación directo con nuestro equipo a través del icono de <strong>WhatsApp</strong> o el acceso a nuestra <strong>Web Corporativa</strong>.</p>
+            </div>
         </div>
     </div>
 </div>
 
 <div class="modal-overlay" id="confirmModal">
-    <div class="modal-content">
-        <div class="success-icon">✓</div>
-        <h2 style="border:none; margin-bottom:5px;">¡Pedido Enviado!</h2>
-        <p style="color: #64748b; font-size: 0.9rem;">Se ha generado su solicitud correctamente.</p>
+    <div class="modal-content" style="text-align: center;">
+        <div style="font-size: 4rem; color: var(--success); margin-bottom: 10px;">✓</div>
+        <h2 style="border:none; margin-bottom:5px; color: var(--blue-dark);">Solicitud Procesada</h2>
+        <p style="color: #64748b; font-size: 0.9rem;">Gracias por confiar en el servicio oficial del Grupo MDS.</p>
         
         <div class="order-id-badge" id="confirmCode">-----</div>
         
-        <div class="confirm-summary" id="confirmSummary">
-            </div>
+        <div id="confirmSummary" style="text-align: left; background: #f8fafc; padding: 20px; border-radius: 10px; margin: 20px 0; border: 1px solid #e2e8f0; font-size: 0.85rem;"></div>
 
-        <p style="font-size: 0.85rem; color: var(--blue-dark); margin-bottom: 15px;"><strong>¿Desea agilizar su pedido?</strong><br>Contacte ahora por WhatsApp con este código.</p>
+        <p style="font-size: 0.9rem; color: var(--blue-dark); margin-bottom: 20px;"><strong>¿Necesita agilizar el envío?</strong><br>Pulse el botón inferior para informar a nuestro equipo comercial.</p>
         
         <a href="#" id="waConfirmBtn" target="_blank" class="btn-modal-wa">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/WhatsApp_icon.png" width="20"> Contactar por WhatsApp
+            <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/WhatsApp_icon.png" width="22"> Notificar por WhatsApp
         </a>
         
-        <button class="btn-modal-close" onclick="window.location.reload()">Cerrar y Nueva Solicitud</button>
+        <button style="background: none; border: none; color: #94a3b8; cursor: pointer; margin-top: 20px; font-size: 0.85rem; text-decoration: underline;" onclick="window.location.reload()">Cerrar y volver al inicio</button>
     </div>
 </div>
 
@@ -186,16 +218,16 @@
         <div class="category-card"><div class="category-header" onclick="toggleCat('bases-content', this)">BASES PMMA <span>▼</span></div><div id="bases-content" class="category-content collapsed"><div class="category-inner"><div class="products-grid" id="grid-bases"></div></div></div></div>
         <div class="category-card"><div class="category-header" onclick="toggleCat('reflex-content', this)">REFLEXIVO <span>▼</span></div><div id="reflex-content" class="category-content collapsed"><div class="category-inner"><div class="products-grid" id="grid-reflex"></div></div></div></div>
         <div class="category-card"><div class="category-header" onclick="toggleCat('terminadas-content', this)">PLACAS TERMINADAS <span>▼</span></div><div id="terminadas-content" class="category-content collapsed"><div class="category-inner"><div class="products-grid" id="grid-terminadas"></div></div></div></div>
-        <div class="category-card"><div class="category-header" onclick="toggleCat('senalizacion-content', this)">SEÑALIZACIÓN <span>▼</span></div><div id="senalizacion-content" class="category-content collapsed"><div class="category-inner"><div class="products-grid" id="grid-senalizacion"></div></div></div></div>
+        <div class="category-card"><div class="category-header" onclick="toggleCat('senalizacion-content', this)">SEÑALIZACIÓN <span>▼</span></div><div id="senalizacion-content" class="category-content collapsed"><div class="category-inner"><span class="subcat-title">Balizas V16</span><div class="products-grid" id="grid-senalizacion"></div></div></div></div>
     </div>
 
     <aside class="sidebar">
-        <h2>Resumen</h2>
-        <div class="cart-items-wrapper" id="cart-items"><p style="color:#94a3b8; text-align:center; padding:20px;">Vacío</p></div>
-        <input type="text" id="nombre" class="input-form" placeholder="Empresa / Cliente *">
-        <input type="tel" id="telefono" class="input-form" placeholder="Teléfono *">
-        <textarea id="notas" class="input-form" rows="2" placeholder="Observaciones..."></textarea>
-        <button class="btn-submit" onclick="enviarPedido()">Confirmar Pedido</button>
+        <h2 style="color: var(--blue-dark); border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 20px;">MI PEDIDO</h2>
+        <div class="cart-items-wrapper" id="cart-items"><p style="color:#94a3b8; text-align:center; padding:30px; font-style: italic;">Su carrito está vacío</p></div>
+        <input type="text" id="nombre" class="input-form" placeholder="Nombre de Empresa / Cliente *">
+        <input type="tel" id="telefono" class="input-form" placeholder="Teléfono de contacto *">
+        <textarea id="notas" class="input-form" rows="3" placeholder="Observaciones adicionales..."></textarea>
+        <button class="btn-submit" onclick="enviarPedido()">CONFIRMAR Y ENVIAR</button>
     </aside>
 </div>
 
@@ -207,6 +239,8 @@
 <a href="https://wa.me/34674352726" class="wa-float" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/WhatsApp_icon.png" width="35"></a>
 
 <script>
+    if ('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js'); }
+
     const productos = [
         { id: 1, cat: 'bases', nombre: "Base PMMA Estándar 520x110", pack: 50 },
         { id: 2, cat: 'bases', nombre: "Base PMMA Estándar c/ tira publicitaria 520x110", pack: 50 },
@@ -243,76 +277,41 @@
 
     let carrito = [];
 
-    function toggleCat(id, el) {
-        const c = document.getElementById(id);
-        c.classList.toggle('collapsed');
-        el.querySelector('span').innerText = c.classList.contains('collapsed') ? '▼' : '▲';
-    }
-
-    function toggleModal(id) {
-        const m = document.getElementById(id);
-        m.style.display = (m.style.display === 'flex') ? 'none' : 'flex';
-    }
+    function toggleCat(id, el) { const c = document.getElementById(id); c.classList.toggle('collapsed'); el.querySelector('span').innerText = c.classList.contains('collapsed') ? '▼' : '▲'; }
+    function toggleModal(id) { const m = document.getElementById(id); m.style.display = (m.style.display === 'flex') ? 'none' : 'flex'; }
 
     function render() {
-        const grid = (cat) => productos.filter(p => p.cat === cat).map(p => `
-            <div class="item-card">
-                <div>${p.img ? `<img src="${p.img}" class="item-img">`:''}<h3>${p.nombre}</h3><p class="item-pack">${p.pack==1?'Uds':'Min: '+p.pack}</p></div>
-                <div><div class="qty-box"><button class="qty-btn" onclick="altQty(${p.id},-1)">-</button><span class="qty-val" id="q-${p.id}">${p.pack}</span><button class="qty-btn" onclick="altQty(${p.id},1)">+</button></div><button class="btn-add" onclick="add(${p.id})">Añadir</button></div>
-            </div>`).join('');
+        const grid = (cat) => productos.filter(p => p.cat === cat).map(p => `<div class="item-card"><div>${p.img ? `<img src="${p.img}" class="item-img">`:''}<h3>${p.nombre}</h3><p class="item-pack">${p.pack==1?'Unidades':'Mínimo: '+p.pack}</p></div><div><div class="qty-box"><button class="qty-btn" onclick="altQty(${p.id},-1)">-</button><span class="qty-val" id="q-${p.id}">${p.pack}</span><button class="qty-btn" onclick="altQty(${p.id},1)">+</button></div><button class="btn-add" onclick="add(${p.id})">Añadir al carrito</button></div></div>`).join('');
         document.getElementById('grid-bases').innerHTML = grid('bases');
         document.getElementById('grid-reflex').innerHTML = grid('reflex');
         document.getElementById('grid-terminadas').innerHTML = grid('terminadas');
         document.getElementById('grid-senalizacion').innerHTML = grid('senalizacion');
     }
 
-    function altQty(id, dir) {
-        const el = document.getElementById(`q-${id}`);
-        const p = productos.find(x => x.id === id);
-        let val = parseInt(el.innerText) + (dir * p.pack);
-        el.innerText = val < p.pack ? p.pack : val;
-    }
+    function altQty(id, dir) { const el = document.getElementById(`q-${id}`); const p = productos.find(x => x.id === id); let val = parseInt(el.innerText) + (dir * p.pack); el.innerText = val < p.pack ? p.pack : val; }
 
-    function add(id) {
-        const p = productos.find(x => x.id === id);
-        const qty = parseInt(document.getElementById(`q-${id}`).innerText);
-        const ex = carrito.find(x => x.id === id);
-        if (ex) ex.qty += qty; else carrito.push({...p, qty});
-        renderCart();
-    }
+    function add(id) { const p = productos.find(x => x.id === id); const qty = parseInt(document.getElementById(`q-${id}`).innerText); const ex = carrito.find(x => x.id === id); if (ex) ex.qty += qty; else carrito.push({...p, qty}); renderCart(); }
 
-    function renderCart() {
-        const div = document.getElementById('cart-items');
-        if (!carrito.length) { div.innerHTML = '<p style="color:#94a3b8; text-align:center; padding:20px;">Vacío</p>'; return; }
-        div.innerHTML = carrito.map((i, idx) => `<div class="cart-row"><span><strong>${i.qty}</strong> x ${i.nombre.substring(0,20)}...</span><button onclick="carrito.splice(${idx},1);renderCart();" style="border:none;background:none;cursor:pointer;">✕</button></div>`).join('');
-    }
+    function renderCart() { const div = document.getElementById('cart-items'); if (!carrito.length) { div.innerHTML = '<p style="color:#94a3b8; text-align:center; padding:30px; font-style: italic;">Su carrito está vacío</p>'; return; } div.innerHTML = carrito.map((i, idx) => `<div class="cart-row"><span><strong>${i.qty}</strong> x ${i.nombre}</span><button onclick="carrito.splice(${idx},1);renderCart();" style="border:none;background:none;cursor:pointer;color:#cbd5e1;">✕</button></div>`).join(''); }
 
     function enviarPedido() {
         const nom = document.getElementById('nombre').value.trim();
         const tel = document.getElementById('telefono').value.trim();
-        if (!carrito.length || !nom || !tel) return alert("Complete los campos *");
+        if (!carrito.length || !nom || !tel) return alert("Por favor, rellene los campos obligatorios (*) antes de continuar.");
         
         const id = Math.random().toString(36).substring(2, 7).toUpperCase();
-        const asunto = `NUEVO PEDIDO ${id}`;
         let cuerpo = `Cliente: ${nom}\nTeléfono: ${tel}\n\nBuenas tardes, quiero realizar el siguiente pedido:\n\n`;
-        let resumenHtml = '<ul>';
-        carrito.forEach(i => {
-            cuerpo += `- ${i.qty} unidades de ${i.nombre}\n`;
-            resumenHtml += `<li><strong>${i.qty}</strong> x ${i.nombre}</li>`;
-        });
+        let resumenHtml = '<ul style="list-style:none; padding:0;">';
+        carrito.forEach(i => { cuerpo += `- ${i.qty} unidades de ${i.nombre}\n`; resumenHtml += `<li style="margin-bottom:8px; border-bottom:1px solid #f1f5f9; padding-bottom:5px;"><strong>${i.qty}</strong> x ${i.nombre}</li>`; });
         resumenHtml += '</ul>';
-        cuerpo += `\nObservaciones: ${document.getElementById('notas').value}\n\nMuchas gracias,\nUn cordial saludo.`;
+        cuerpo += `\nObservaciones del cliente: ${document.getElementById('notas').value}\n\nMuchas gracias,\nUn cordial saludo.`;
 
-        // Mostrar Modal de confirmación antes de abrir el correo
-        document.getElementById('confirmCode').innerText = `CÓDIGO: ${id}`;
+        document.getElementById('confirmCode').innerText = `ORDEN Nº: ${id}`;
         document.getElementById('confirmSummary').innerHTML = resumenHtml;
-        document.getElementById('waConfirmBtn').href = `https://wa.me/34674352726?text=${encodeURIComponent('Hola, contacto en relación al PEDIDO ' + id + ' que acabo de realizar.')}`;
+        document.getElementById('waConfirmBtn').href = `https://wa.me/34674352726?text=${encodeURIComponent('Hola, contacto para agilizar la gestión de mi PEDIDO ' + id + '.')}`;
         toggleModal('confirmModal');
-
-        // Abrir correo
-        window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=pedidos@matriculadosdelsur.es&su=${encodeURIComponent(asunto)}&body=${encodeURIComponent(cuerpo)}`, '_blank');
+        window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=pedidos@matriculadosdelsur.es&su=${encodeURIComponent('NUEVO PEDIDO ' + id)}&body=${encodeURIComponent(cuerpo)}`, '_blank');
     }
-
     render();
 </script>
 </body>
