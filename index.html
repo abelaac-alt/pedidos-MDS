@@ -228,7 +228,7 @@
             cursor: pointer;
         }
 
-        /* --- BOTÓN WHATSAPP CORPORATIVO --- */
+        /* --- BOTÓN WHATSAPP --- */
         .wa-float { 
             position: fixed; 
             bottom: 20px; 
@@ -247,20 +247,12 @@
         .wa-float:hover { transform: scale(1.1); }
         .wa-float img { width: 60%; height: 60%; }
 
-        /* --- ESPACIO PUBLICITARIO (CATÁLOGO) --- */
+        /* --- PUBLICIDAD --- */
         .ad-box {
             margin-top: 30px;
             text-align: center;
             overflow: hidden;
             border-radius: 4px;
-            transition: opacity 0.3s;
-        }
-        .ad-box:hover { opacity: 0.9; }
-        .ad-box img {
-            width: 100%;
-            height: auto;
-            display: block;
-            border: 1px solid var(--border);
         }
     </style>
 </head>
@@ -317,15 +309,24 @@
         <button class="btn-submit" onclick="enviarPedido()">Confirmar Pedido</button>
 
         <div class="ad-box">
-            <a href="https://www.matriculadosdelsur.com/wp-content/uploads/2025/10/CATALOG-MDS-2025-FINAL.pdf" target="_blank" title="Ver catálogo completo">
-                <img src="https://www.matriculadosdelsur.com/wp-content/uploads/2025/10/catalogo_pc_mds-1024x229.webp" alt="Catálogo Grupo MDS">
+            <a href="https://www.matriculadosdelsur.com/wp-content/uploads/2025/10/CATALOG-MDS-2025-FINAL.pdf" target="_blank" style="text-decoration: none;">
+                <img src="https://www.matriculadosdelsur.com/wp-content/uploads/2025/10/catalogo_pc_mds-1024x229.webp" 
+                     alt="Catálogo Grupo MDS" 
+                     id="ad-img"
+                     style="width: 100%; border-radius: 4px; display: block; border: 1px solid var(--border);"
+                     onerror="this.style.display='none'; document.getElementById('alt-ad').style.display='block';">
+                
+                <div id="alt-ad" style="display:none; background: var(--blue-dark); color: white; padding: 20px; border-radius: 4px; border-bottom: 4px solid var(--orange-corp);">
+                    <p style="font-weight: bold; margin-bottom: 10px; text-transform: uppercase; font-size: 0.9rem;">Catálogo General 2025</p>
+                    <span style="background: var(--orange-corp); color: var(--blue-dark); padding: 5px 15px; border-radius: 3px; font-weight: bold; font-size: 0.8rem;">VER PDF COMPLETO</span>
+                </div>
             </a>
         </div>
         
     </aside>
 </div>
 
-<a href="https://wa.me/34674352726?text=Hola,%20me%20gustaría%20hacer%20una%20consulta%20sobre%20un%20pedido." class="wa-float" target="_blank">
+<a href="https://wa.me/34674352726?text=Hola,%20tengo%20una%20consulta%20sobre%20un%20pedido:" class="wa-float" target="_blank">
     <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/WhatsApp_icon.png" alt="WhatsApp">
 </a>
 
