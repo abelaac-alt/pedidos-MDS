@@ -3,7 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
     <meta name="theme-color" content="#fdb933">
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    
     <title>Pedidos | Grupo MDS</title>
     <style>
         :root {
@@ -23,7 +29,7 @@
             background-color: var(--bg-page);
             color: var(--text-dark);
             line-height: 1.6;
-            -webkit-tap-highlight-color: transparent; /* Quita el parpadeo azul en móviles al tocar */
+            -webkit-tap-highlight-color: transparent;
         }
 
         /* --- HEADER --- */
@@ -339,6 +345,13 @@
 </a>
 
 <script>
+    // --- REGISTRO DEL SERVICE WORKER (Para que se instale como App) ---
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('./sw.js')
+        .then(() => console.log('✅ Service Worker activado'))
+        .catch(err => console.error('Error del Service Worker', err));
+    }
+
     const productos = [
         // --- BASES PMMA ---
         { id: 1, cat: 'bases', nombre: "Base PMMA Estándar 520x110", pack: 50 },
@@ -382,7 +395,6 @@
 
     let carrito = [];
 
-    // Función para abrir/cerrar categorías y rotar la flecha
     function toggleCat(contentId, headerElement) {
         const content = document.getElementById(contentId);
         content.classList.toggle('collapsed');
@@ -395,7 +407,6 @@
         }
     }
 
-    // Renderizador Inteligente
     function render() {
         const createCard = (p) => {
             const imgHtml = p.img ? `<img src="${p.img}" class="item-img" alt="${p.nombre}">` : '';
