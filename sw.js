@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mds-v2';
+const CACHE_NAME = 'mds-v5';
 const assets = ['./index.html', './manifest.json'];
 
 self.addEventListener('install', e => {
