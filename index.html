@@ -255,12 +255,12 @@
             border-radius: 4px;
         }
 
-        /* --- FOOTER ISO CERTIFICADOS --- */
+        /* --- FOOTER ISO CERTIFICADOS (REDUCIDOS) --- */
         footer {
             background-color: var(--white);
-            padding: 40px 20px;
+            padding: 25px 20px;
             text-align: center;
-            border-top: 2px solid var(--blue-dark);
+            border-top: 1px solid var(--border);
             margin-top: 20px;
         }
 
@@ -270,25 +270,28 @@
         }
 
         .iso-title {
-            color: var(--blue-dark);
-            font-size: 0.8rem;
-            font-weight: bold;
+            color: var(--text-secondary);
+            font-size: 0.7rem;
             text-transform: uppercase;
-            letter-spacing: 1.5px;
-            margin-bottom: 20px;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            opacity: 0.8;
         }
 
         .iso-img {
-            max-width: 400px;
+            max-width: 180px; /* Tamaño reducido significativamente */
             width: 100%;
             height: auto;
             display: block;
             margin: 0 auto;
-            opacity: 0.9;
+            opacity: 0.6; /* Mayor transparencia para menor peso visual */
+            filter: grayscale(100%); /* Efecto escala de grises para mayor sobriedad */
+            transition: opacity 0.3s, filter 0.3s;
         }
-
-        @media (max-width: 600px) {
-            .iso-img { max-width: 280px; }
+        
+        .iso-img:hover {
+            opacity: 1;
+            filter: grayscale(0%);
         }
     </style>
 </head>
@@ -364,7 +367,7 @@
 
 <footer>
     <div class="iso-container">
-        <p class="iso-title">Calidad y Seguridad Certificada</p>
+        <p class="iso-title">Calidad Certificada</p>
         <img src="https://www.matriculadosdelsur.com/wp-content/uploads/2025/10/ISO-MDS-1.webp" alt="Certificaciones ISO Grupo MDS" class="iso-img">
     </div>
 </footer>
