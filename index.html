@@ -55,7 +55,7 @@
             display: grid;
             grid-template-columns: 1fr;
             gap: 30px;
-            padding: 0 20px 100px;
+            padding: 0 20px 40px;
         }
 
         @media (min-width: 992px) {
@@ -254,6 +254,42 @@
             overflow: hidden;
             border-radius: 4px;
         }
+
+        /* --- FOOTER ISO CERTIFICADOS --- */
+        footer {
+            background-color: var(--white);
+            padding: 40px 20px;
+            text-align: center;
+            border-top: 2px solid var(--blue-dark);
+            margin-top: 20px;
+        }
+
+        .iso-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .iso-title {
+            color: var(--blue-dark);
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 20px;
+        }
+
+        .iso-img {
+            max-width: 400px;
+            width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+
+        @media (max-width: 600px) {
+            .iso-img { max-width: 280px; }
+        }
     </style>
 </head>
 <body>
@@ -325,6 +361,13 @@
         
     </aside>
 </div>
+
+<footer>
+    <div class="iso-container">
+        <p class="iso-title">Calidad y Seguridad Certificada</p>
+        <img src="https://www.matriculadosdelsur.com/wp-content/uploads/2025/10/ISO-MDS-1.webp" alt="Certificaciones ISO Grupo MDS" class="iso-img">
+    </div>
+</footer>
 
 <a href="https://wa.me/34674352726?text=Hola,%20tengo%20una%20consulta%20sobre%20un%20pedido:" class="wa-float" target="_blank">
     <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/WhatsApp_icon.png" alt="WhatsApp">
