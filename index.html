@@ -390,7 +390,6 @@
         <a href="https://www.matriculadosdelsur.com" target="_blank" class="web-button">
             🌐 VISITAR MATRICULADOSDELSUR.COM
         </a>
-        
         <p class="iso-title">Calidad Certificada</p>
         <img src="https://www.matriculadosdelsur.com/wp-content/uploads/2025/10/ISO-MDS-1.webp" alt="Certificaciones ISO Grupo MDS" class="iso-img">
     </div>
@@ -430,13 +429,11 @@
         { id: 22, cat: 'reflex', nombre: "Reflexivo Cuatriciclo Ligero 210x85", pack: 25 },
         { id: 23, cat: 'reflex', nombre: "Reflexivo Vehículo Especial Cuadrada 280x200", pack: 25 },
         { id: 24, cat: 'reflex', nombre: "Reflexivo Vehículo Especial 340x110", pack: 25 },
-        
         { id: 25, cat: 'terminadas', nombre: "Matrícula PMMA Taxi/VTC 520x110", pack: 1, img: "https://metatrafic.com/27655-large_default/placa-pmma-matricula-acrilica-taxi-vtc-520x110.jpg" },
         { id: 26, cat: 'terminadas', nombre: "Matrícula PMMA Especial Cuadrada 280x200", pack: 1, img: "https://metatrafic.com/27658-large_default/placa-pmma-matricula-acrilica-vehiculo-especial-280x200.jpg" },
         { id: 27, cat: 'terminadas', nombre: "Matrícula PMMA Especial 340x110", pack: 1, img: "https://metatrafic.com/27659-large_default/placa-pmma-matricula-acrilica-vehiculo-especial-larga-340x110.jpg" },
         { id: 28, cat: 'terminadas', nombre: "Matrícula PMMA Temporal Empresa 520x110", pack: 1 },
         { id: 29, cat: 'terminadas', nombre: "Matrícula PMMA Temporal Particular 520x110", pack: 1 },
-
         { id: 30, cat: 'senalizacion', nombre: "Baliza V16 SOS FLASH", pack: 32, img: "https://www.matriculadosdelsur.com/wp-content/uploads/2026/01/Sosflash_3_MDS.webp", link: "https://www.matriculadosdelsur.com/baliza-v16-sosflah/" },
         { id: 31, cat: 'senalizacion', nombre: "Baliza V16 Metaflash", pack: 50, img: "https://www.matriculadosdelsur.com/wp-content/uploads/2026/01/baliza-v16_metaflash.webp", link: "https://www.matriculadosdelsur.com/baliza-v16-metaflash/" }
     ];
@@ -498,14 +495,49 @@
             </div>`).join('');
     }
 
-    function enviarPedido() {
-        const nom = document.getElementById('nombre').value;
-        const tel = document.getElementById('telefono').value;
-        if (!carrito.length || !nom || !tel) return alert("Completa los campos *");
-        let body = `PEDIDO GRUPO MDS\nCliente: ${nom}\nTel: ${tel}\n\n`;
-        carrito.forEach(i => body += `- ${i.qty} uds. ${i.nombre}\n`);
-        window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=pedidos@matriculadosdelsur.es&su=Pedido ${nom}&body=${encodeURIComponent(body)}`, '_blank');
+    // --- FUNCIÓN PARA GENERAR CÓDIGO ALEATORIO ---
+    function generarCodigoPedido() {
+        const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        let codigo = '';
+        for (let i = 0; i < 5; i++) {
+            codigo += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
+        }
+        return codigo;
     }
+
+    function enviarPedido() {
+        const nom = document.getElementById('nombre').value.trim();
+        const tel = document.getElementById('telefono').value.trim();
+        const notas = document.getElementById('notas').value.trim();
+        
+        if (!carrito.length || !nom || !tel) return alert("Por favor, completa los campos obligatorios (*) y añade productos al carrito.");
+
+        const idPedido = generarCodigoPedido();
+
+        // Estructura del Asunto
+        const asunto = `NUEVO PEDIDO ${idPedido}`;
+
+        // Estructura del Cuerpo del Mensaje
+        let cuerpo = `Cliente: ${nom}\n`;
+        cuerpo += `Teléfono: ${tel}\n\n`;
+        cuerpo += `Buenas tardes, quiero realizar el siguiente pedido:\n\n`;
+        
+        carrito.forEach(i => {
+            cuerpo += `- ${i.qty} unidades de ${i.nombre}\n`;
+        });
+
+        if (notas) {
+            cuerpo += `\nObservaciones: ${notas}\n`;
+        }
+
+        cuerpo += `\nMuchas gracias,\nUn cordial saludo.`;
+
+        // Generar enlace de correo (Soporta Gmail y clientes nativos)
+        const mailLink = `https://mail.google.com/mail/?view=cm&fs=1&to=pedidos@matriculadosdelsur.es&su=${encodeURIComponent(asunto)}&body=${encodeURIComponent(cuerpo)}`;
+        
+        window.open(mailLink, '_blank');
+    }
+
     render();
 </script>
 </body>
