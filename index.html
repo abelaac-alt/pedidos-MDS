@@ -56,9 +56,6 @@
         
         button { width: 100%; padding: 0.875rem; background-color: var(--primary); color: white; border: none; border-radius: 0.5rem; font-size: 1rem; font-weight: 600; cursor: pointer; margin-top: 0.5rem; transition: var(--transition); }
         button:hover { background-color: var(--primary-hover); }
-        
-        .btn-excel { background-color: var(--success); margin-bottom: 1rem; }
-        .btn-excel:hover { background-color: #059669; }
 
         .transaction-list { list-style: none; max-height: 400px; overflow-y: auto; padding-right: 0.25rem; flex-grow: 1; }
         .transaction-item { display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: #f9fafb; border-radius: 0.5rem; margin-bottom: 0.75rem; border-left: 4px solid transparent; }
@@ -123,8 +120,8 @@
                     
                     <div class="form-group">
                         <label for="category">Categoría</label>
-                        <select id="category">
-                            </select>
+                        <input type="text" id="category" list="category-list" placeholder="Elige o escribe una categoría..." required>
+                        <datalist id="category-list"></datalist>
                     </div>
 
                     <div class="form-group">
@@ -162,22 +159,26 @@
         const formElement = document.getElementById('finance-form');
         const dateInput = document.getElementById('date');
         const accountTypeSelect = document.getElementById('account-type');
-        const categorySelect = document.getElementById('category');
+        
+        // Elementos actualizados para las categorías
+        const categoryInput = document.getElementById('category');
+        const categoryList = document.getElementById('category-list');
+        
         const descriptionInput = document.getElementById('description');
         const amountInput = document.getElementById('amount');
         const submitBtn = document.getElementById('submit-btn');
         const cancelEditBtn = document.getElementById('cancel-edit-btn');
         const exportExcelBtn = document.getElementById('export-excel');
 
-        // Organización estricta de categorías dentro de cada cuenta
+        // Sugerencias de categorías ampliadas (ahora puedes añadir más o simplemente escribirlas al registrar)
         const accountMapping = {
-            ingreso: ['sueldo', 'efectivo'],
-            inversion: ['inversión'],
-            gasto: ['gastos']
+            ingreso: ['Sueldo', 'Efectivo', 'Bizum', 'Transferencia'],
+            inversion: ['Bolsa', 'Fondo de Inversión', 'Criptomonedas', 'Ahorro a plazo'],
+            gasto: ['Comida', 'Transporte', 'Hogar', 'Salud', 'Ocio', 'Educación', 'Otros']
         };
 
         let dataRecords = JSON.parse(localStorage.getItem('finance_records')) || [];
-        let editModeId = null; // Variable para saber si estamos editando
+        let editModeId = null;
 
         function init() {
             updateCategories();
@@ -191,20 +192,20 @@
             dateInput.value = today;
         }
 
-        // Cambia dinámicamente las categorías según la cuenta elegida
-        function updateCategories(selectedCategory = null) {
+        // Carga las sugerencias en el datalist
+        function updateCategories() {
             const currentAccount = accountTypeSelect.value;
-            categorySelect.innerHTML = '';
+            categoryList.innerHTML = '';
             
             accountMapping[currentAccount].forEach(cat => {
                 const option = document.createElement('option');
                 option.value = cat;
-                option.textContent = cat.charAt(0).toUpperCase() + cat.slice(1);
-                categorySelect.appendChild(option);
+                categoryList.appendChild(option);
             });
 
-            if (selectedCategory) {
-                categorySelect.value = selectedCategory;
+            // Solo limpiamos el input si no estamos en medio de una edición
+            if (!editModeId) {
+                categoryInput.value = '';
             }
         }
 
@@ -218,10 +219,177 @@
             if(dataRecords.length === 0) {
                 listElement.innerHTML = '<div class="empty-state">Sin movimientos registrados.</div>';
             } else {
-                // Ordenar por fecha (los más recientes primero)
                 const sortedRecords = [...dataRecords].sort((a, b) => new Date(b.date) - new Date(a.date));
                 sortedRecords.forEach(renderRecord);
             }
         }
 
-        function
+        function renderRecord(record) {
+            const li = document.createElement('li');
+            li.classList.add('transaction-item', record.account);
+
+            let prefix = '-';
+            let textClass = 'text-danger';
+            if (record.account === 'ingreso') {
+                prefix = '+';
+                textClass = 'text-success';
+            } else if (record.account === 'inversion') {
+                prefix = '-';
+                textClass = 'text-investment';
+            }
+
+            const dateObj = new Date(record.date);
+            const formattedDate = dateObj.toLocaleDateString('es-ES');
+
+            li.innerHTML = `
+                <div>
+                    <span class="text-main transaction-desc">${record.description}</span>
+                    <span class="transaction-cat">${formattedDate} | Cuenta: ${record.account} | Cat: ${record.category}</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <strong class="${textClass}">
+                        ${prefix}${formatCurrency(record.amount)}
+                    </strong>
+                    <div class="action-btns">
+                        <button class="icon-btn edit-btn" onclick="editRecord(${record.id})" title="Editar">✎</button>
+                        <button class="icon-btn delete-btn" onclick="deleteRecord(${record.id})" title="Eliminar">×</button>
+                    </div>
+                </div>
+            `;
+            listElement.appendChild(li);
+        }
+
+        function calculateAccounts() {
+            const totalIncome = dataRecords.filter(r => r.account === 'ingreso').reduce((acc, r) => acc + r.amount, 0);
+            const totalInvestment = dataRecords.filter(r => r.account === 'inversion').reduce((acc, r) => acc + r.amount, 0);
+            const totalExpense = dataRecords.filter(r => r.account === 'gasto').reduce((acc, r) => acc + r.amount, 0);
+            
+            const totalSavings = totalIncome - totalInvestment - totalExpense;
+
+            accountIncome.innerText = formatCurrency(totalIncome);
+            accountInvestment.innerText = formatCurrency(totalInvestment);
+            accountExpense.innerText = formatCurrency(totalExpense);
+            accountSavings.innerText = formatCurrency(totalSavings);
+            
+            if (totalSavings < 0) {
+                accountSavings.className = "amount text-danger";
+            } else {
+                accountSavings.className = "amount text-savings";
+            }
+        }
+
+        function deleteRecord(id) {
+            dataRecords = dataRecords.filter(r => r.id !== id);
+            localStorage.setItem('finance_records', JSON.stringify(dataRecords));
+            
+            if(editModeId === id) {
+                resetForm();
+            }
+            
+            renderAllRecords();
+            calculateAccounts();
+        }
+
+        function editRecord(id) {
+            const record = dataRecords.find(r => r.id === id);
+            if(!record) return;
+
+            editModeId = id;
+            dateInput.value = record.date;
+            accountTypeSelect.value = record.account;
+            
+            // Actualizamos la lista de sugerencias y luego asignamos el valor que tenía guardado
+            updateCategories();
+            categoryInput.value = record.category; 
+            
+            descriptionInput.value = record.description;
+            amountInput.value = record.amount;
+
+            submitBtn.textContent = 'Actualizar Registro';
+            cancelEditBtn.style.display = 'block';
+            
+            // Hacemos scroll suave hacia arriba para que el usuario vea el formulario
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function resetForm() {
+            editModeId = null;
+            descriptionInput.value = '';
+            amountInput.value = '';
+            categoryInput.value = '';
+            setDefaultDate();
+            submitBtn.textContent = 'Registrar en Cuenta';
+            cancelEditBtn.style.display = 'none';
+        }
+
+        function exportToExcel() {
+            if(dataRecords.length === 0) {
+                alert("No hay registros para exportar.");
+                return;
+            }
+
+            let csvContent = "data:text/csv;charset=utf-8,\uFEFF";
+            csvContent += "Fecha;Cuenta;Categoria;Descripcion;Importe\n";
+
+            dataRecords.forEach(record => {
+                const dateObj = new Date(record.date).toLocaleDateString('es-ES');
+                const safeDescription = record.description.replace(/;/g, ",");
+                const safeAmount = record.amount.toString().replace('.', ',');
+                
+                const row = `${dateObj};${record.account};${record.category};${safeDescription};${safeAmount}`;
+                csvContent += row + "\n";
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `Transacciones_${new Date().toISOString().split('T')[0]}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Listeners
+        accountTypeSelect.addEventListener('change', updateCategories);
+        cancelEditBtn.addEventListener('click', resetForm);
+        exportExcelBtn.addEventListener('click', exportToExcel);
+
+        formElement.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            if (editModeId) {
+                dataRecords = dataRecords.map(r => {
+                    if (r.id === editModeId) {
+                        return {
+                            ...r,
+                            date: dateInput.value,
+                            account: accountTypeSelect.value,
+                            category: categoryInput.value.trim(), // Capturamos lo que el usuario haya escrito
+                            description: descriptionInput.value,
+                            amount: parseFloat(amountInput.value)
+                        };
+                    }
+                    return r;
+                });
+            } else {
+                const record = {
+                    id: Date.now() + Math.floor(Math.random() * 1000),
+                    date: dateInput.value,
+                    account: accountTypeSelect.value,
+                    category: categoryInput.value.trim(), // Capturamos lo que el usuario haya escrito
+                    description: descriptionInput.value,
+                    amount: parseFloat(amountInput.value)
+                };
+                dataRecords.push(record);
+            }
+
+            localStorage.setItem('finance_records', JSON.stringify(dataRecords));
+            resetForm();
+            renderAllRecords();
+            calculateAccounts();
+        });
+
+        init();
+    </script>
+</body>
+</html>
