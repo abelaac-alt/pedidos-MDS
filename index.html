@@ -118,7 +118,7 @@
             transition: opacity 0.2s;
         }
 
-        /* Formularios */
+        /* Formularios y Filtros */
         .form-group { margin-bottom: 24px; }
         label { 
             display: block; 
@@ -159,6 +159,43 @@
         }
         .btn-submit:active { background-color: var(--gray-dark); }
 
+        /* Contenedor de Filtros (Buscador) */
+        .filter-section {
+            background: var(--white);
+            border: 1px solid var(--gray-light);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 24px;
+        }
+        .filter-section input, .filter-section select {
+            padding: 12px;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+        .filter-section .filter-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 0;
+        }
+        .filter-section .filter-row > * {
+            margin-bottom: 0;
+            flex: 1;
+        }
+        .btn-reset {
+            width: 100%;
+            padding: 10px;
+            background: var(--gray-hover);
+            color: var(--gray-dark);
+            border: 1px solid var(--gray-light);
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-top: 12px;
+            cursor: pointer;
+        }
+        .btn-reset:active { background: var(--gray-light); }
+
         /* Lista de Transacciones */
         .transaction-list { list-style: none; }
         .transaction-item { 
@@ -168,6 +205,7 @@
             padding: 20px 0; 
             border-bottom: 1px solid var(--gray-light); 
         }
+        .transaction-item:first-child { border-top: 1px solid var(--gray-light); }
         .transaction-info { flex-grow: 1; padding-right: 10px; }
         .transaction-desc { font-weight: 600; font-size: 16px; color: var(--black); display: block; margin-bottom: 4px; }
         
@@ -241,6 +279,7 @@
         <header class="app-header">
             <h1>Finanzas</h1>
             <div class="header-actions">
+                <!-- Botón Modo Incógnito -->
                 <button class="btn-icon" id="btn-incognito" title="Modo Incógnito">
                     <svg id="icon-eye" viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
                         <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
@@ -249,6 +288,7 @@
                         <path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/>
                     </svg>
                 </button>
+                <!-- Botón Exportar -->
                 <button class="btn-icon" id="btn-export" title="Exportar a Excel">
                     <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
                         <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
@@ -258,6 +298,7 @@
         </header>
 
         <div class="view-container">
+            <!-- Resumen -->
             <div class="view active" id="view-dashboard">
                 <div class="summary-card dark">
                     <h3>Ahorro Disponible</h3>
@@ -277,11 +318,30 @@
                 </div>
             </div>
 
+            <!-- Actividad -->
             <div class="view" id="view-activity">
+                
+                <!-- Buscador / Filtros -->
+                <div class="filter-section">
+                    <input type="text" id="filter-text" placeholder="Buscar por concepto o importe..." autocomplete="off">
+                    <div class="filter-row">
+                        <select id="filter-type">
+                            <option value="">Clasificación (Todas)</option>
+                            <option value="ingreso">Ingresos</option>
+                            <option value="gasto">Gastos</option>
+                            <option value="inversion">Inversiones</option>
+                        </select>
+                        <input type="date" id="filter-date" title="Filtrar por fecha exacta">
+                    </div>
+                    <button class="btn-reset" id="filter-reset">Restablecer Filtros</button>
+                </div>
+
                 <ul class="transaction-list" id="transaction-list">
-                    </ul>
+                    <!-- Dinámico -->
+                </ul>
             </div>
 
+            <!-- Formulario (Añadir/Editar) -->
             <div class="view" id="view-add">
                 <form id="transaction-form">
                     <div class="form-group">
@@ -339,6 +399,12 @@
         const submitBtn = document.getElementById('submit-btn');
         const dateInput = document.getElementById('date');
 
+        // Elementos del filtro
+        const filterText = document.getElementById('filter-text');
+        const filterType = document.getElementById('filter-type');
+        const filterDate = document.getElementById('filter-date');
+        const filterReset = document.getElementById('filter-reset');
+
         const formatter = new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' });
         dateInput.value = new Date().toISOString().split('T')[0];
 
@@ -346,6 +412,20 @@
             localStorage.setItem('finanzas_data', JSON.stringify(transactions));
             localStorage.setItem('finanzas_incognito', JSON.stringify(isIncognito));
         }
+
+        // ----------------------------------------
+        // EVENTOS DEL BUSCADOR / FILTROS
+        // ----------------------------------------
+        [filterText, filterType, filterDate].forEach(el => {
+            el.addEventListener('input', updateUI);
+        });
+
+        filterReset.addEventListener('click', () => {
+            filterText.value = '';
+            filterType.value = '';
+            filterDate.value = '';
+            updateUI();
+        });
 
         // ----------------------------------------
         // MODO INCÓGNITO
@@ -440,7 +520,7 @@
         }
 
         function updateUI() {
-            // Actualizar iconos de incógnito
+            // 1. Actualizar iconos de incógnito
             if (isIncognito) {
                 document.getElementById('icon-eye').style.display = 'none';
                 document.getElementById('icon-eye-off').style.display = 'block';
@@ -449,13 +529,30 @@
                 document.getElementById('icon-eye-off').style.display = 'none';
             }
 
+            // 2. Lógica de filtrado
+            const fText = filterText.value.toLowerCase();
+            const fType = filterType.value;
+            const fDate = filterDate.value;
+
+            const filteredTransactions = transactions.filter(t => {
+                const matchText = t.desc.toLowerCase().includes(fText) || t.amount.toString().includes(fText);
+                const matchType = fType === "" || t.type === fType;
+                const matchDate = fDate === "" || t.date === fDate;
+                
+                return matchText && matchType && matchDate;
+            });
+
+            // 3. Renderizar Lista
             list.innerHTML = '';
             const maskText = '***,** €';
-
-            const sortedTransactions = [...transactions].sort((a, b) => new Date(b.date) - new Date(a.date));
+            const sortedTransactions = [...filteredTransactions].sort((a, b) => new Date(b.date) - new Date(a.date));
 
             if (sortedTransactions.length === 0) {
-                list.innerHTML = '<div class="empty-state">No hay actividad registrada.</div>';
+                if(transactions.length === 0) {
+                    list.innerHTML = '<div class="empty-state">No hay actividad registrada.</div>';
+                } else {
+                    list.innerHTML = '<div class="empty-state">Ningún registro coincide con la búsqueda.</div>';
+                }
             } else {
                 sortedTransactions.forEach(t => {
                     const li = document.createElement('li');
@@ -466,7 +563,6 @@
                     const amountClass = isPositive ? 'amount-ingreso' : 'amount-gasto';
                     const displayDate = formatDateToDisplay(t.date);
                     
-                    // Renderizado del dinero o máscara de incógnito
                     const displayAmount = isIncognito ? `${sign} ${maskText}` : `${sign}${formatter.format(t.amount)}`;
                     
                     li.innerHTML = `
@@ -490,12 +586,12 @@
                 });
             }
 
+            // 4. Actualizar Totales del Dashboard (Usando siempre la lista COMPLETA, no la filtrada)
             const income = transactions.filter(t => t.type === 'ingreso').reduce((acc, t) => acc + t.amount, 0);
             const expense = transactions.filter(t => t.type === 'gasto').reduce((acc, t) => acc + t.amount, 0);
             const investment = transactions.filter(t => t.type === 'inversion').reduce((acc, t) => acc + t.amount, 0);
             const savings = income - expense - investment;
 
-            // Renderizado de totales o máscaras
             document.getElementById('account-income').innerText = isIncognito ? maskText : formatter.format(income);
             document.getElementById('account-expense').innerText = isIncognito ? maskText : formatter.format(expense);
             document.getElementById('account-investment').innerText = isIncognito ? maskText : formatter.format(investment);
