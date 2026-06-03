@@ -236,7 +236,6 @@
     <div class="app-container">
         <header class="app-header">
             <h1>Finanzas</h1>
-            
             <button class="btn-export" id="btn-export" title="Exportar a Excel">
                 <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
                     <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
@@ -316,7 +315,11 @@
     </div>
 
     <script>
-        let transactions = [];
+        // ----------------------------------------
+        // SISTEMA DE ALMACENAMIENTO (LOCALSTORAGE)
+        // ----------------------------------------
+        // Cargamos los datos guardados, o inicializamos un array vacío si es la primera vez
+        let transactions = JSON.parse(localStorage.getItem('finanzas_data')) || [];
         let currentEditId = null;
 
         const form = document.getElementById('transaction-form');
@@ -324,14 +327,16 @@
         const submitBtn = document.getElementById('submit-btn');
         const dateInput = document.getElementById('date');
 
-        // Formateador moneda para la interfaz (usando punto para miles y coma para decimales en ES)
         const formatter = new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' });
-
-        // Establecer fecha de hoy por defecto al cargar
         dateInput.value = new Date().toISOString().split('T')[0];
 
+        // Función centralizada para guardar en el dispositivo
+        function saveData() {
+            localStorage.setItem('finanzas_data', JSON.stringify(transactions));
+        }
+
         // ----------------------------------------
-        // SISTEMA DE NAVEGACIÓN ROBUSTO
+        // NAVEGACIÓN
         // ----------------------------------------
         document.querySelectorAll('.nav-item').forEach(item => {
             item.addEventListener('click', function() {
@@ -361,39 +366,29 @@
                 return;
             }
 
-            // UTF-8 BOM para que Excel (en Windows) interprete bien los acentos
             let csvContent = "\uFEFF";
-            
-            // Cabeceras (Separador: punto y coma, ideal para Excel Europeo)
             csvContent += "Fecha;Concepto;Clasificación;Importe (€)\n";
 
-            // Datos ordenados por fecha
             const sortedTransactions = [...transactions].sort((a, b) => new Date(b.date) - new Date(a.date));
             
             sortedTransactions.forEach(t => {
                 const date = formatDateToDisplay(t.date);
-                // Limpiamos los ; del concepto por si el usuario los escribió, para no romper columnas
                 const desc = t.desc.replace(/;/g, ","); 
-                // Adaptamos el número a formato europeo para Excel (cambiamos punto por coma en el decimal)
                 const amount = t.amount.toFixed(2).replace(".", ",");
-                
                 csvContent += `${date};${desc};${t.type};${amount}\n`;
             });
 
-            // Cálculos finales para añadir al documento
             const income = transactions.filter(t => t.type === 'ingreso').reduce((acc, t) => acc + t.amount, 0);
             const expense = transactions.filter(t => t.type === 'gasto').reduce((acc, t) => acc + t.amount, 0);
             const investment = transactions.filter(t => t.type === 'inversion').reduce((acc, t) => acc + t.amount, 0);
             const savings = income - expense - investment;
 
-            // Filas de totales
-            csvContent += "\n"; // Fila en blanco
+            csvContent += "\n"; 
             csvContent += `;;Total Ingresos;${income.toFixed(2).replace(".", ",")}\n`;
             csvContent += `;;Total Gastos;${expense.toFixed(2).replace(".", ",")}\n`;
             csvContent += `;;Total Inversiones;${investment.toFixed(2).replace(".", ",")}\n`;
             csvContent += `;;AHORRO DISPONIBLE;${savings.toFixed(2).replace(".", ",")}\n`;
 
-            // Crear el archivo virtual y forzar la descarga
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
             const url = URL.createObjectURL(blob);
             
@@ -490,6 +485,7 @@
                 transactions.unshift(transaction); 
             }
             
+            saveData(); // Guardar cambios en el navegador
             updateUI();
             resetForm();
             switchTab('activity');
@@ -511,10 +507,11 @@
 
         window.deleteTransaction = function(id) {
             transactions = transactions.filter(t => t.id !== id);
+            saveData(); // Guardar cambios al borrar
             updateUI();
         };
 
-        // Inicio
+        // Inicio: Reflejar la interfaz con los datos guardados
         updateUI();
     </script>
 </body>
