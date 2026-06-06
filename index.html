@@ -278,4 +278,663 @@ label{display:block;font-family:var(--mono);font-size:9px;font-weight:500;letter
       <div class="sub-view active" id="sub-lista">
         <div class="filter-bar">
           <div class="search-wrap">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="filter-text" placeholder="Buscar concepto o importe…" autocomplete="off">
+          </div>
+          <div class="filter-row">
+            <select id="filter-type">
+              <option value="">Todas</option>
+              <option value="ingreso">Ingresos</option>
+              <option value="gasto">Gastos</option>
+              <option value="inversion">Inversiones</option>
+            </select>
+            <input type="date" id="filter-date">
+          </div>
+          <button class="btn-reset" id="filter-reset">↺ Limpiar filtros</button>
+        </div>
+        <ul class="tx-list" id="tx-list"></ul>
+      </div>
+
+      <!-- SUB: ESTADÍSTICAS -->
+      <div class="sub-view" id="sub-stats">
+        <div class="period-pills">
+          <button class="pill active" data-period="mes">Mes</button>
+          <button class="pill" data-period="trimestre">Trim.</button>
+          <button class="pill" data-period="año">Año</button>
+          <button class="pill" data-period="todo">Todo</button>
+        </div>
+        <div class="stats-scroll" id="stats-scroll">
+
+          <!-- KPIs -->
+          <div>
+            <div class="section-label">Resumen del periodo</div>
+            <div class="kpi-row">
+              <div class="kpi-card k-income"><span class="kpi-val val-sensitive" id="kpi-income">—</span><span class="kpi-lbl">Ingresos</span></div>
+              <div class="kpi-card k-expense"><span class="kpi-val val-sensitive" id="kpi-expense">—</span><span class="kpi-lbl">Gastos</span></div>
+              <div class="kpi-card k-invest"><span class="kpi-val val-sensitive" id="kpi-invest">—</span><span class="kpi-lbl">Inversión</span></div>
+            </div>
+            <div class="kpi-row" style="margin-top:8px">
+              <div class="kpi-card k-savings"><span class="kpi-val val-sensitive" id="kpi-savings">—</span><span class="kpi-lbl">Ahorro</span></div>
+              <div class="kpi-card k-rate"><span class="kpi-val" id="kpi-rate">—</span><span class="kpi-lbl">Tasa ahorro</span></div>
+              <div class="kpi-card k-count"><span class="kpi-val" id="kpi-txcount">—</span><span class="kpi-lbl">Registros</span></div>
+            </div>
+          </div>
+
+          <!-- Barra presupuesto -->
+          <div class="chart-card">
+            <div class="chart-title">Balance del periodo</div>
+            <div class="savings-meter">
+              <div class="meter-track">
+                <div class="meter-fill-income" id="meter-income"></div>
+                <div class="meter-fill-expense" id="meter-expense"></div>
+                <div class="meter-fill-invest" id="meter-invest"></div>
+              </div>
+              <div class="meter-labels">
+                <span class="meter-lbl" id="meter-lbl-l">Gastos 0%</span>
+                <span class="meter-lbl" id="meter-lbl-r">Ahorro 0%</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Donut distribución -->
+          <div class="chart-card">
+            <div class="chart-title">Distribución de salidas</div>
+            <div class="donut-wrap">
+              <canvas id="donut-canvas" class="donut-canvas" width="110" height="110"></canvas>
+              <div class="donut-legend" id="donut-legend"></div>
+            </div>
+          </div>
+
+          <!-- Tendencia 6 meses -->
+          <div class="chart-card">
+            <div class="chart-title">Tendencia <span class="chart-badge">6 meses</span></div>
+            <div class="trend-wrap">
+              <svg class="trend-svg" id="trend-svg" viewBox="0 0 300 100" preserveAspectRatio="none"></svg>
+            </div>
+            <div class="trend-legend" id="trend-legend"></div>
+          </div>
+
+          <!-- Top gastos -->
+          <div class="chart-card">
+            <div class="chart-title">Top gastos del periodo</div>
+            <div class="bar-chart" id="bar-expenses"></div>
+          </div>
+
+          <!-- Top movimientos -->
+          <div class="chart-card">
+            <div class="chart-title">Mayores movimientos</div>
+            <div class="top-list" id="top-tx"></div>
+          </div>
+
+          <!-- Promedios -->
+          <div class="chart-card">
+            <div class="chart-title">Promedios diarios</div>
+            <div class="avg-pair">
+              <div class="avg-box"><span class="avg-val val-sensitive" id="avg-income" style="color:var(--green)">—</span><span class="avg-lbl">Ingreso/día</span></div>
+              <div class="avg-box"><span class="avg-val val-sensitive" id="avg-expense" style="color:var(--red)">—</span><span class="avg-lbl">Gasto/día</span></div>
+              <div class="avg-box"><span class="avg-val val-sensitive" id="avg-invest" style="color:var(--blue)">—</span><span class="avg-lbl">Inversión/día</span></div>
+              <div class="avg-box"><span class="avg-val val-sensitive" id="avg-savings" style="color:var(--ink)">—</span><span class="avg-lbl">Ahorro/día</span></div>
+            </div>
+          </div>
+
+        </div><!-- /stats-scroll -->
+      </div><!-- /sub-stats -->
+    </div><!-- /view-activity -->
+
+    <!-- ══ ADD / EDIT ══ -->
+    <div class="view" id="view-add">
+      <div class="form-title" id="form-title">Nueva transacción</div>
+      <div class="form-group">
+        <label>Clasificación</label>
+        <div class="type-selector">
+          <button type="button" class="type-btn selected ingreso" data-type="ingreso"><span class="type-icon">↑</span>Ingreso</button>
+          <button type="button" class="type-btn gasto" data-type="gasto"><span class="type-icon">↓</span>Gasto</button>
+          <button type="button" class="type-btn inversion" data-type="inversion"><span class="type-icon">◈</span>Inversión</button>
+        </div>
+      </div>
+      <div class="form-group"><label for="inp-desc">Concepto</label><input type="text" id="inp-desc" placeholder="Ej. Nómina de junio…" required autocomplete="off"></div>
+      <div class="form-group"><label for="inp-amount">Importe (€)</label><input type="number" id="inp-amount" placeholder="0,00" step="0.01" min="0.01" required></div>
+      <div class="form-group"><label for="inp-date">Fecha</label><input type="date" id="inp-date" required></div>
+      <button class="btn-submit" id="btn-submit">Registrar</button>
+      <button class="btn-cancel" id="btn-cancel">Cancelar</button>
+    </div>
+
+  </div><!-- /view-container -->
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav">
+    <div class="nav-item" data-tab="dashboard">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      <span class="nav-label">Resumen</span>
+    </div>
+    <div class="nav-item" data-tab="add">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+      <span class="nav-label">Añadir</span>
+    </div>
+    <div class="nav-item" data-tab="activity">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+      <span class="nav-label">Actividad</span>
+    </div>
+  </nav>
+
+</div><!-- /app -->
+<div class="toast" id="toast"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+// ═══════════════════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════════════════
+let transactions = JSON.parse(localStorage.getItem('finanzas_v2') || '[]');
+let isIncognito  = JSON.parse(localStorage.getItem('finanzas_incognito') || 'false');
+let editId       = null;
+let selType      = 'ingreso';
+let curPeriod    = 'mes';
+
+// ═══════════════════════════════════════════════════════════
+//  HELPERS
+// ═══════════════════════════════════════════════════════════
+const EUR  = new Intl.NumberFormat('es-ES', { style:'currency', currency:'EUR' });
+const fmtN = n => EUR.format(n);
+const fmtS = n => {
+  const a = Math.abs(n);
+  if (a >= 1000000) return (n/1000000).toFixed(1).replace('.',',')+' M€';
+  if (a >= 1000)    return (n/1000).toFixed(1).replace('.',',')+' k€';
+  return EUR.format(n);
+};
+const today  = () => new Date().toISOString().split('T')[0];
+const fmtD   = d => { if (!d) return ''; const [y,m,day]=d.split('-'); return `${day}/${m}/${y}`; };
+const save   = () => {
+  localStorage.setItem('finanzas_v2', JSON.stringify(transactions));
+  localStorage.setItem('finanzas_incognito', JSON.stringify(isIncognito));
+};
+const uid    = () => Date.now() + Math.random();
+const esc    = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const ICON   = { ingreso:'↑', gasto:'↓', inversion:'◈' };
+const COL    = { ingreso:'#1a6e3c', gasto:'#b03a2e', inversion:'#1a3a6e' };
+const MONTHS = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2300);
+}
+
+// ═══════════════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════════════
+document.getElementById('inp-date').value = today();
+updateUI();
+switchTab('dashboard');
+
+// ═══════════════════════════════════════════════════════════
+//  NAVIGATION
+// ═══════════════════════════════════════════════════════════
+document.querySelectorAll('.nav-item').forEach(el => {
+  el.addEventListener('click', () => {
+    const tab = el.dataset.tab;
+    if (tab === 'add') resetForm();
+    switchTab(tab);
+  });
+});
+
+function switchTab(tab) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const v = document.getElementById('view-' + tab);
+  if (v) { v.classList.add('active'); void v.offsetHeight; }
+  const n = document.querySelector(`.nav-item[data-tab="${tab}"]`);
+  if (n) n.classList.add('active');
+}
+
+// ═══════════════════════════════════════════════════════════
+//  SUB-TABS
+// ═══════════════════════════════════════════════════════════
+document.querySelectorAll('.sub-tab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.sub-tab').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.sub-view').forEach(v => v.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('sub-' + btn.dataset.sub).classList.add('active');
+    if (btn.dataset.sub === 'stats') renderStats();
+  });
+});
+
+// ═══════════════════════════════════════════════════════════
+//  PERIOD PILLS
+// ═══════════════════════════════════════════════════════════
+document.querySelectorAll('.pill').forEach(p => {
+  p.addEventListener('click', () => {
+    document.querySelectorAll('.pill').forEach(x => x.classList.remove('active'));
+    p.classList.add('active');
+    curPeriod = p.dataset.period;
+    renderStats();
+  });
+});
+
+function filterPeriod(txs) {
+  const now = new Date();
+  return txs.filter(t => {
+    const d = new Date(t.date);
+    if (curPeriod === 'mes')
+      return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+    if (curPeriod === 'trimestre') {
+      const q = Math.floor(now.getMonth()/3);
+      return Math.floor(d.getMonth()/3) === q && d.getFullYear() === now.getFullYear();
+    }
+    if (curPeriod === 'año') return d.getFullYear() === now.getFullYear();
+    return true;
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
+//  INCOGNITO
+// ═══════════════════════════════════════════════════════════
+document.getElementById('btn-incognito').addEventListener('click', () => {
+  isIncognito = !isIncognito; save(); applyIncognito();
+});
+function applyIncognito() {
+  document.getElementById('icon-show').style.display = isIncognito ? 'none' : 'block';
+  document.getElementById('icon-hide').style.display = isIncognito ? 'block' : 'none';
+  document.querySelectorAll('.val-sensitive').forEach(el => {
+    el.style.filter     = isIncognito ? 'blur(5px)' : 'none';
+    el.style.userSelect = isIncognito ? 'none' : 'auto';
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
+//  FORM
+// ═══════════════════════════════════════════════════════════
+document.querySelectorAll('.type-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    selType = btn.dataset.type;
+  });
+});
+function resetForm() {
+  editId = null; selType = 'ingreso';
+  document.getElementById('inp-desc').value = '';
+  document.getElementById('inp-amount').value = '';
+  document.getElementById('inp-date').value = today();
+  document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('selected'));
+  document.querySelector('.type-btn[data-type="ingreso"]').classList.add('selected');
+  document.getElementById('btn-submit').textContent = 'Registrar';
+  document.getElementById('form-title').textContent = 'Nueva transacción';
+}
+document.getElementById('btn-cancel').addEventListener('click', () => { resetForm(); switchTab('dashboard'); });
+document.getElementById('btn-submit').addEventListener('click', () => {
+  const desc   = document.getElementById('inp-desc').value.trim();
+  const amount = parseFloat(document.getElementById('inp-amount').value);
+  const date   = document.getElementById('inp-date').value;
+  if (!desc || isNaN(amount) || amount <= 0 || !date) { toast('⚠ Completa todos los campos'); return; }
+  if (editId !== null) {
+    const i = transactions.findIndex(t => t.id === editId);
+    if (i !== -1) transactions[i] = { id:editId, desc, amount, date, type:selType };
+    toast('✓ Actualizado');
+  } else {
+    transactions.push({ id:uid(), desc, amount, date, type:selType });
+    toast('✓ Registrado');
+  }
+  save(); updateUI(); resetForm(); switchTab('dashboard');
+});
+
+window.editTransaction = id => {
+  const t = transactions.find(x => x.id === id); if (!t) return;
+  editId = id; selType = t.type;
+  document.getElementById('inp-desc').value = t.desc;
+  document.getElementById('inp-amount').value = t.amount;
+  document.getElementById('inp-date').value = t.date;
+  document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('selected'));
+  document.querySelector(`.type-btn[data-type="${t.type}"]`).classList.add('selected');
+  document.getElementById('btn-submit').textContent = 'Actualizar';
+  document.getElementById('form-title').textContent = 'Editar transacción';
+  switchTab('add');
+};
+window.deleteTransaction = id => {
+  if (!confirm('¿Eliminar esta transacción?')) return;
+  transactions = transactions.filter(t => t.id !== id);
+  save(); updateUI(); toast('Eliminado');
+};
+
+// ═══════════════════════════════════════════════════════════
+//  FILTERS
+// ═══════════════════════════════════════════════════════════
+['filter-text','filter-type','filter-date'].forEach(id =>
+  document.getElementById(id).addEventListener('input', updateUI));
+document.getElementById('filter-reset').addEventListener('click', () => {
+  ['filter-text','filter-type','filter-date'].forEach(id => document.getElementById(id).value = '');
+  updateUI();
+});
+
+// ═══════════════════════════════════════════════════════════
+//  MAIN UI UPDATE
+// ═══════════════════════════════════════════════════════════
+function updateUI() {
+  const inc = transactions.filter(t=>t.type==='ingreso').reduce((s,t)=>s+t.amount,0);
+  const exp = transactions.filter(t=>t.type==='gasto').reduce((s,t)=>s+t.amount,0);
+  const inv = transactions.filter(t=>t.type==='inversion').reduce((s,t)=>s+t.amount,0);
+  const sav = inc - exp - inv;
+
+  document.getElementById('val-savings').textContent = fmtN(sav);
+  document.getElementById('val-income').textContent  = fmtN(inc);
+  document.getElementById('val-expense').textContent = fmtN(exp);
+  document.getElementById('val-invest').textContent  = fmtN(inv);
+  document.getElementById('val-count').textContent   = transactions.length;
+  document.getElementById('val-balance-sub').textContent =
+    `${transactions.length} transacción${transactions.length !== 1 ? 'es' : ''}`;
+
+  renderList('recent-list',
+    [...transactions].sort((a,b)=>new Date(b.date)-new Date(a.date)).slice(0,5), false);
+
+  const fT = document.getElementById('filter-text').value.toLowerCase();
+  const fY = document.getElementById('filter-type').value;
+  const fD = document.getElementById('filter-date').value;
+  const filtered = transactions.filter(t =>
+    (t.desc.toLowerCase().includes(fT) || String(t.amount).includes(fT)) &&
+    (!fY || t.type === fY) && (!fD || t.date === fD)
+  ).sort((a,b)=>new Date(b.date)-new Date(a.date));
+  renderList('tx-list', filtered, true);
+
+  if (document.getElementById('sub-stats').classList.contains('active')) renderStats();
+  applyIncognito();
+}
+
+function renderList(cid, items, actions) {
+  const el = document.getElementById(cid);
+  if (!items.length) { el.innerHTML = `<div class="empty-state">Sin registros</div>`; return; }
+  el.innerHTML = items.map(t => `
+    <li class="tx-item">
+      <div class="tx-left">
+        <div class="tx-dot ${t.type}">${ICON[t.type]}</div>
+        <div class="tx-info">
+          <span class="tx-desc">${esc(t.desc)}</span>
+          <div class="tx-meta"><span>${t.type}</span><span>·</span><span>${fmtD(t.date)}</span></div>
+        </div>
+      </div>
+      <div class="tx-right">
+        <span class="tx-amount ${t.type} val-sensitive">${t.type==='ingreso'?'+':'−'}${fmtN(t.amount)}</span>
+        ${actions ? `<div class="tx-actions">
+          <button class="btn-action btn-edit" onclick="editTransaction(${t.id})">Editar</button>
+          <button class="btn-action btn-delete" onclick="deleteTransaction(${t.id})">Borrar</button>
+        </div>` : ''}
+      </div>
+    </li>`).join('');
+}
+
+// ═══════════════════════════════════════════════════════════
+//  STATISTICS ENGINE
+// ═══════════════════════════════════════════════════════════
+function renderStats() {
+  const txs = filterPeriod(transactions);
+  const inc = txs.filter(t=>t.type==='ingreso').reduce((s,t)=>s+t.amount,0);
+  const exp = txs.filter(t=>t.type==='gasto').reduce((s,t)=>s+t.amount,0);
+  const inv = txs.filter(t=>t.type==='inversion').reduce((s,t)=>s+t.amount,0);
+  const sav = inc - exp - inv;
+  const rate = inc > 0 ? (sav/inc*100) : 0;
+
+  // ── KPIs ──
+  document.getElementById('kpi-income').textContent  = fmtS(inc);
+  document.getElementById('kpi-expense').textContent = fmtS(exp);
+  document.getElementById('kpi-invest').textContent  = fmtS(inv);
+  document.getElementById('kpi-savings').textContent = fmtS(sav);
+  document.getElementById('kpi-rate').textContent    = rate.toFixed(1) + '%';
+  document.getElementById('kpi-txcount').textContent = txs.length;
+
+  // ── Balance meter ──
+  renderMeter(inc, exp, inv);
+
+  // ── Donut ──
+  renderDonut(exp, inv, inc);
+
+  // ── Trend ──
+  renderTrend();
+
+  // ── Top gastos barras ──
+  renderBarExpenses(txs);
+
+  // ── Top movimientos ──
+  renderTopTx(txs);
+
+  // ── Averages ──
+  renderAverages(txs, inc, exp, inv, sav);
+
+  applyIncognito();
+}
+
+// ── METER ────────────────────────────────────────────────────
+function renderMeter(inc, exp, inv) {
+  const total = Math.max(inc, 0.01);
+  const expPct = Math.min((exp/total)*100, 100);
+  const invPct = Math.min((inv/total)*100, Math.max(0, 100-expPct));
+  const savPct = Math.max(0, 100-expPct-invPct);
+
+  document.getElementById('meter-income').style.width  = '100%';
+  document.getElementById('meter-expense').style.width = expPct.toFixed(1) + '%';
+  document.getElementById('meter-invest').style.width  = invPct.toFixed(1) + '%';
+  document.getElementById('meter-invest').style.left   = expPct.toFixed(1) + '%';
+  document.getElementById('meter-lbl-l').textContent = `Gastos ${expPct.toFixed(0)}%`;
+  document.getElementById('meter-lbl-r').textContent = `Ahorro ${savPct.toFixed(0)}%`;
+}
+
+// ── DONUT ────────────────────────────────────────────────────
+function renderDonut(exp, inv, inc) {
+  const canvas = document.getElementById('donut-canvas');
+  const ctx = canvas.getContext('2d');
+  const cx=55, cy=55, R=42, r=26;
+  ctx.clearRect(0,0,110,110);
+  const total = exp + inv;
+
+  if (total === 0) {
+    ctx.beginPath(); ctx.arc(cx,cy,R,0,Math.PI*2);
+    ctx.strokeStyle='#e8e7e2'; ctx.lineWidth=R-r; ctx.stroke();
+  } else {
+    let start = -Math.PI/2;
+    [{v:exp,c:'#b03a2e'},{v:inv,c:'#1a3a6e'}].forEach(seg => {
+      if (seg.v <= 0) return;
+      const a = (seg.v/total)*Math.PI*2;
+      ctx.beginPath(); ctx.arc(cx,cy,R,start,start+a);
+      ctx.strokeStyle=seg.c; ctx.lineWidth=R-r; ctx.stroke();
+      start += a;
+    });
+  }
+
+  const saved = Math.max(0, inc - exp - inv);
+  document.getElementById('donut-legend').innerHTML = [
+    {label:'Gastos',    color:'#b03a2e', val:exp,   pct: inc>0?(exp/inc*100).toFixed(1):'0'},
+    {label:'Inversión', color:'#1a3a6e', val:inv,   pct: inc>0?(inv/inc*100).toFixed(1):'0'},
+    {label:'Ahorro',    color:'#1a6e3c', val:saved, pct: inc>0?(saved/inc*100).toFixed(1):'0'},
+  ].map(it => `
+    <div class="legend-item">
+      <div class="legend-dot" style="background:${it.color}"></div>
+      <div class="legend-info">
+        <span class="legend-label">${it.label}</span>
+        <span class="legend-val val-sensitive">${fmtS(it.val)}</span>
+      </div>
+      <span class="legend-pct">${it.pct}%</span>
+    </div>`).join('');
+}
+
+// ── TREND ────────────────────────────────────────────────────
+function renderTrend() {
+  const now = new Date();
+  const months = Array.from({length:6}, (_,i) => {
+    const d = new Date(now.getFullYear(), now.getMonth()-5+i, 1);
+    return { y:d.getFullYear(), m:d.getMonth(), lbl:MONTHS[d.getMonth()] };
+  });
+  const data = months.map(mo => {
+    const f = transactions.filter(t => {
+      const d = new Date(t.date);
+      return d.getFullYear()===mo.y && d.getMonth()===mo.m;
+    });
+    return {
+      lbl: mo.lbl,
+      inc: f.filter(t=>t.type==='ingreso').reduce((s,t)=>s+t.amount,0),
+      exp: f.filter(t=>t.type==='gasto').reduce((s,t)=>s+t.amount,0),
+      inv: f.filter(t=>t.type==='inversion').reduce((s,t)=>s+t.amount,0),
+    };
+  });
+
+  const maxV  = Math.max(...data.flatMap(d=>[d.inc,d.exp,d.inv]), 1);
+  const W=300, H=100, pL=8, pR=8, pT=8, pB=22;
+  const cW=W-pL-pR, cH=H-pT-pB;
+  const step = cW / (data.length-1 || 1);
+
+  // Grid lines
+  let grid = '';
+  [0.25,0.5,0.75,1].forEach(f => {
+    const y = pT + cH*(1-f);
+    grid += `<line x1="${pL}" y1="${y}" x2="${W-pR}" y2="${y}" stroke="#e8e7e2" stroke-width="0.5"/>`;
+  });
+
+  function makePath(key, color) {
+    const pts = data.map((d,i) => ({
+      x: pL + i*step,
+      y: pT + cH - (d[key]/maxV)*cH
+    }));
+    let d = `M ${pts[0].x},${pts[0].y}`;
+    for (let i=1; i<pts.length; i++) {
+      const c1x=pts[i-1].x+step*.4, c1y=pts[i-1].y;
+      const c2x=pts[i].x-step*.4,   c2y=pts[i].y;
+      d += ` C ${c1x},${c1y} ${c2x},${c2y} ${pts[i].x},${pts[i].y}`;
+    }
+    // Area fill
+    const areaD = d + ` L ${pts[pts.length-1].x},${pT+cH} L ${pts[0].x},${pT+cH} Z`;
+    return `<path d="${areaD}" fill="${color}" fill-opacity="0.07"/>
+            <path d="${d}" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round"/>`;
+  }
+  function makeDots(key, color) {
+    return data.map((d,i) => {
+      if (d[key]===0) return '';
+      const x=pL+i*step, y=pT+cH-(d[key]/maxV)*cH;
+      return `<circle cx="${x}" cy="${y}" r="3" fill="${color}" stroke="white" stroke-width="1.5"/>`;
+    }).join('');
+  }
+  const labels = data.map((d,i) =>
+    `<text x="${pL+i*step}" y="${H-4}" text-anchor="middle" font-size="8" fill="#999990" font-family="DM Mono,monospace">${d.lbl}</text>`
+  ).join('');
+
+  document.getElementById('trend-svg').innerHTML =
+    grid +
+    makePath('inc','#1a6e3c') + makePath('exp','#b03a2e') + makePath('inv','#1a3a6e') +
+    makeDots('inc','#1a6e3c') + makeDots('exp','#b03a2e') + makeDots('inv','#1a3a6e') +
+    labels;
+
+  document.getElementById('trend-legend').innerHTML = [
+    {lbl:'Ingresos',c:'#1a6e3c'},{lbl:'Gastos',c:'#b03a2e'},{lbl:'Inversión',c:'#1a3a6e'}
+  ].map(l=>`
+    <div class="trend-legend-item">
+      <div class="trend-legend-dot" style="background:${l.c}"></div>
+      <span class="trend-legend-lbl">${l.lbl}</span>
+    </div>`).join('');
+}
+
+// ── BAR EXPENSES ─────────────────────────────────────────────
+function renderBarExpenses(txs) {
+  const gastos = txs.filter(t=>t.type==='gasto').sort((a,b)=>b.amount-a.amount).slice(0,7);
+  const el = document.getElementById('bar-expenses');
+  if (!gastos.length) {
+    el.innerHTML=`<div class="empty-state" style="padding:10px 0;font-size:10px">Sin gastos en este periodo</div>`;
+    return;
+  }
+  const max = gastos[0].amount;
+  el.innerHTML = gastos.map((t,i) => `
+    <div class="bar-row">
+      <div class="bar-row-label" title="${esc(t.desc)}">${esc(t.desc)}</div>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:${(t.amount/max*100).toFixed(1)}%;background:#b03a2e;opacity:${0.9-i*0.1}"></div>
+      </div>
+      <div class="bar-row-val val-sensitive">${fmtS(t.amount)}</div>
+    </div>`).join('');
+}
+
+// ── TOP TX ───────────────────────────────────────────────────
+function renderTopTx(txs) {
+  const top = [...txs].sort((a,b)=>b.amount-a.amount).slice(0,6);
+  const el  = document.getElementById('top-tx');
+  if (!top.length) {
+    el.innerHTML=`<div class="empty-state" style="padding:10px 0;font-size:10px">Sin movimientos en este periodo</div>`;
+    return;
+  }
+  el.innerHTML = top.map((t,i) => `
+    <div class="top-item">
+      <span class="top-rank">${i+1}</span>
+      <div class="top-dot ${t.type}">${ICON[t.type]}</div>
+      <span class="top-desc">${esc(t.desc)}</span>
+      <div class="top-right">
+        <span class="top-amt val-sensitive" style="color:${COL[t.type]}">${t.type==='ingreso'?'+':'−'}${fmtS(t.amount)}</span>
+        <span class="top-date">${fmtD(t.date)}</span>
+      </div>
+    </div>`).join('');
+}
+
+// ── AVERAGES ─────────────────────────────────────────────────
+function renderAverages(txs, inc, exp, inv, sav) {
+  let days = 30;
+  if (curPeriod==='trimestre') days=90;
+  else if (curPeriod==='año') days=365;
+  else if (curPeriod==='todo' && txs.length>0) {
+    const dates = txs.map(t=>new Date(t.date));
+    days = Math.max(1, (Math.max(...dates)-Math.min(...dates))/86400000+1);
+  }
+  document.getElementById('avg-income').textContent  = fmtS(inc/days);
+  document.getElementById('avg-expense').textContent = fmtS(exp/days);
+  document.getElementById('avg-invest').textContent  = fmtS(inv/days);
+  document.getElementById('avg-savings').textContent = fmtS(sav/days);
+}
+
+// ═══════════════════════════════════════════════════════════
+//  EXCEL EXPORT
+// ═══════════════════════════════════════════════════════════
+document.getElementById('btn-export').addEventListener('click', () => {
+  if (!transactions.length) { toast('Sin datos para exportar'); return; }
+  const wb = XLSX.utils.book_new();
+  const sorted = [...transactions].sort((a,b)=>new Date(a.date)-new Date(b.date));
+  const tI = sorted.filter(t=>t.type==='ingreso').reduce((s,t)=>s+t.amount,0);
+  const tE = sorted.filter(t=>t.type==='gasto').reduce((s,t)=>s+t.amount,0);
+  const tV = sorted.filter(t=>t.type==='inversion').reduce((s,t)=>s+t.amount,0);
+  const tS = tI-tE-tV;
+
+  // Resumen
+  const wsR = XLSX.utils.aoa_to_sheet([
+    ['RESUMEN FINANCIERO'],
+    ['Generado el', new Date().toLocaleDateString('es-ES',{weekday:'long',year:'numeric',month:'long',day:'numeric'})],
+    ['Total registros', transactions.length], [],
+    ['CONCEPTO','IMPORTE (€)'],
+    ['Total Ingresos',tI],['Total Gastos',tE],['Total Inversión',tV],[],
+    ['AHORRO DISPONIBLE',tS],[],['DESGLOSE POR TIPO'],
+    ['Tipo','Nº Trans.','Importe (€)','% s/Ingresos'],
+    ['Ingresos',sorted.filter(t=>t.type==='ingreso').length,tI,'100%'],
+    ['Gastos',sorted.filter(t=>t.type==='gasto').length,tE,tI>0?((tE/tI)*100).toFixed(1)+'%':'—'],
+    ['Inversiones',sorted.filter(t=>t.type==='inversion').length,tV,tI>0?((tV/tI)*100).toFixed(1)+'%':'—'],
+    ['Ahorro neto','-',tS,tI>0?((tS/tI)*100).toFixed(1)+'%':'—'],
+  ]);
+  wsR['!cols']=[{wch:28},{wch:22},{wch:20},{wch:18}];
+  XLSX.utils.book_append_sheet(wb,wsR,'Resumen');
+
+  // Todas
+  const txRows = sorted.map((t,i)=>[
+    i+1, fmtD(t.date), t.desc,
+    t.type.charAt(0).toUpperCase()+t.type.slice(1), t.amount,
+    t.type==='ingreso'?'Entrada':t.type==='gasto'?'Salida':'Inversión'
+  ]);
+  txRows.push([],[,'','','TOTAL INGRESOS',tI,''],[,'','','TOTAL GASTOS',tE,''],
+    [,'','','TOTAL INVERSIÓN',tV,''],[,'','','AHORRO DISPONIBLE',tS,'']);
+  const wsTx = XLSX.utils.aoa_to_sheet([['#','Fecha','Concepto','Clasificación','Importe (€)','Signo'],...txRows]);
+  wsTx['!cols']=[{wch:5},{wch:12},{wch:35},{wch:16},{wch:14},{wch:12}];
+  XLSX.utils.book_append_sheet(wb,wsTx,'Transacciones');
+
+  [['ingreso','Ingresos',tI],['gasto','Gastos',tE],['inversion','Inversiones',tV]].forEach(([type,name,total])=>{
+    const rows = sorted.filter(t=>t.type===type).map((t,i)=>[i+1,fmtD(t.date),t.desc,t.amount]);
+    rows.push([],[,'','TOTAL',total]);
+    const ws = XLSX.utils.aoa_to_sheet([['#','Fecha','Concepto','Importe (€)'],...rows]);
+    ws['!cols']=[{wch:5},{wch:12},{wch:40},{wch:14}];
+    XLSX.utils.book_append_sheet(wb,ws,name);
+  });
+
+  XLSX.writeFile(wb, `Finanzas_${today()}.xlsx`);
+  toast('✓ Excel exportado correctamente');
+});
+</script>
+</body>
+</html>
