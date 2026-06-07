@@ -4,11 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#0d0d0d">
-<link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Finanzas">
+<link rel="manifest" href="/Finanzas-pe/manifest.json">
+<link rel="apple-touch-icon" href="/Finanzas-pe/icon-192.png">
 <title>Finanzas</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -938,10 +938,11 @@ document.getElementById('btn-export').addEventListener('click', () => {
   toast('✓ Excel exportado correctamente');
 });
 </script>
+
 <script>
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./sw.js")
+    navigator.serviceWorker.register("/Finanzas-pe/sw.js")
       .then(() => console.log("Service Worker registrado"))
       .catch(error => console.error("Error registrando Service Worker:", error));
   });
